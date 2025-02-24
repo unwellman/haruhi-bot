@@ -1,0 +1,9 @@
+main: net.ddns.haruhionly.haruhi.Haruhi
+
+name: Haruhi
+
+version: 0.0.1
+
+description: Minecraft to Discord chat bindings
+
+author: Noah
