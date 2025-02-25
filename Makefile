@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-CLASSPATH = "lib/spigot-api-1.21.1-R0.1-SNAPSHOT.jar"
+CLASSPATH = "lib/spigot-api-1.21.1-R0.1-SNAPSHOT.jar:lib/JDA-5.3.0.jar"
 SRC = $(wildcard src/main/*.java)
 CLS = $(patsubst src/main/%.java,$(PKGPATH)/%.class,$(SRC))
 BLDPATH = build
