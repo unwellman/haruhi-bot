@@ -24,7 +24,8 @@ build:
 	cd src/main/java; \
 	link ../resources/plugin.yml plugin.yml; \
 	jar -xf ../../../lib/JDA-5.3.0.jar; \
-	jar -cf ../../../$(JAR) $(CLS) * plugin.yml; \
+	jar -cf ../../../$(JAR) $(CLS) plugin.yml *; \
+	rm -rf club com gnu google javax kotlin META-INF natives net/dv8tion okhttp3 okio org tomp2p; \
 	rm plugin.yml; \
 
 install: build
