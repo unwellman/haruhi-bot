@@ -6,4 +6,6 @@ version: 0.0.1
 
 description: Minecraft to Discord chat bindings
 
+api-version: 1.21.1
+
 author: Noah
