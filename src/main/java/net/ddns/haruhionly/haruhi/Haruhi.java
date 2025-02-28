@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 public class Haruhi extends JavaPlugin {
-	private JDA bot;
+	private JDA api;
 
 	@Override
 	public void onEnable() {
@@ -31,17 +31,23 @@ public class Haruhi extends JavaPlugin {
 			discord.set("token", "YOUR-TOKEN-HERE");
 			this.getLogger().warning("Need Discord bot access token. Update config.yml");
 		}
+		if (!discord.isSet("client-id")) {
+			discord.set("client-id", 0);
+			this.getLogger().warning("Need Discord bot client ID. Update config.yml");
+		}
 		this.saveConfig();
-		this.botInit();
+		this.apiInit();
 	}
 
-	private void botInit() {
+	private void apiInit() {
 		final String token = this.getConfig().getString("discord.token");
-		this.bot = JDABuilder.createDefault(token).build();
-		Bot listener = new Bot();
-		listener.startupMessage = "Haruhi Only is online at haruhionly.ddns.net:25565";
-		listener.logger = this.getLogger();
-		this.bot.addEventListener(listener);
+		this.getLogger().info(String.format("Got Discord token <%s>", token));
+		this.api = JDABuilder.createDefault(token).build();
+		Bot bot = new Bot();
+		bot.startupMessage = "Haruhi Only is online at `haruhionly.ddns.net:25565`!";
+		bot.clientID = this.getConfig().getLong("discord.client-id");
+		bot.logger = this.getLogger();
+		this.api.addEventListener(bot);
 	}
 
 	@Override
