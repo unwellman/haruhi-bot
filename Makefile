@@ -19,16 +19,19 @@ SERVER = ../haruhi/plugins/
 
 default: build
 
-build:
-	javac -cp $(CLASSPATH) $(SRC)
+Haruhi.jar: build
+
+build: $(SRC)
+	javac -Xdiags:verbose -cp $(CLASSPATH) $(SRC)
 	cd src/main/java; \
 	link ../resources/plugin.yml plugin.yml; \
+	link ../resources/defaults.yml defaults.yml; \
 	jar -xf ../../../lib/JDA-5.3.0.jar; \
 	jar -cf ../../../$(JAR) $(CLS) plugin.yml *; \
 	rm -rf club com gnu google javax kotlin META-INF natives net/dv8tion okhttp3 okio org tomp2p; \
-	rm plugin.yml; \
+	rm plugin.yml defaults.yml; \
 
-install: build
+install: Haruhi.jar
 	cp $(JAR) $(SERVER)
 
 clean:

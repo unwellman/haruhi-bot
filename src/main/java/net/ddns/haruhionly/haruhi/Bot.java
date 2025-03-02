@@ -1,6 +1,9 @@
 package net.ddns.haruhionly.haruhi;
 
+import net.ddns.haruhionly.haruhi.Haruhi;
+
 import java.util.logging.Logger;
+import java.util.List;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -14,25 +17,35 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class Bot extends ListenerAdapter {
 	public long clientID;
-	public String startupMessage;
 	public Logger logger;
 
-	private JDA bot;
-	private TextChannel sys;
+	private JDA api;
+	private Haruhi haruhi;
+	public Bot(Haruhi haruhi) {
+		this.haruhi = haruhi;
+	}
+
 	@Override
 	public void onReady(ReadyEvent event) {
-		this.bot = event.getJDA();
-		this.logger.info(String.format("Startup message is %s", this.startupMessage));
-		for (Guild gld : this.bot.getGuilds()) {
-			this.logger.info(String.format("Sending startup message to %s", gld.getName()));
-			this.sys = gld.getSystemChannel();
+		this.api = event.getJDA();
+		this.haruhi.ready();
+	}
+
+	public int messageAll(String message) {
+		int ret = 0;
+		for (Guild gld : this.api.getGuilds()) {
+			TextChannel sys = gld.getSystemChannel();
+			this.logger.info(String.format("Sending message to %s", gld.getName()));
 			try {
-				this.sys.sendMessage(this.startupMessage).queue();
+				sys.sendMessage(message).queue();
+				ret ++;
 			}
 			catch(InsufficientPermissionException e) {
 				this.logger.info(String.format("Insufficient permissions in %s", gld.getName()));
 			}
 		}
+		return ret;
 	}
+
 }
 

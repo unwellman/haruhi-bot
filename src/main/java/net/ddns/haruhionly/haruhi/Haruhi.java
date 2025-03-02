@@ -2,56 +2,91 @@ package net.ddns.haruhionly.haruhi;
 
 import net.ddns.haruhionly.haruhi.Bot;
 
-import java.io.File;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Set;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 public class Haruhi extends JavaPlugin {
 	private JDA api;
+	private Bot bot;
 
 	@Override
-	public void onEnable() {
+	public void onEnable () {
 		this.configure();
-	}
-
-	private void configure() {
-		FileConfiguration config = this.getConfig();
-		if (!config.contains("discord")) {
-			config.createSection("discord");
-		}
-		ConfigurationSection discord =
-			config.getConfigurationSection("discord");
-		if (!discord.isSet("token")) {
-			discord.set("token", "YOUR-TOKEN-HERE");
-			this.getLogger().warning("Need Discord bot access token. Update config.yml");
-		}
-		if (!discord.isSet("client-id")) {
-			discord.set("client-id", 0);
-			this.getLogger().warning("Need Discord bot client ID. Update config.yml");
-		}
-		this.saveConfig();
 		this.apiInit();
 	}
 
-	private void apiInit() {
-		final String token = this.getConfig().getString("discord.token");
-		this.getLogger().info(String.format("Got Discord token <%s>", token));
-		this.api = JDABuilder.createDefault(token).build();
-		Bot bot = new Bot();
-		bot.startupMessage = "Haruhi Only is online at `haruhionly.ddns.net:25565`!";
-		bot.clientID = this.getConfig().getLong("discord.client-id");
-		bot.logger = this.getLogger();
-		this.api.addEventListener(bot);
+	public void ready () {
+		this.bot.messageAll(this.getConfig().getString("discord.startup-message"));
 	}
 
 	@Override
 	public void onDisable() {
+		this.bot.messageAll(this.getConfig().getString("discord.restart-message"));
 	}
+
+	private void configure () {
+		this.saveDefaultConfig(); // Fails if old config.yml already exists
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(this.getTextResource("config.yml")); // Path in the jar
+		}
+		catch (IOException e) {
+			this.getLogger().severe("IO error: " + e.getMessage());
+		}
+		catch (InvalidConfigurationException e) {
+			this.getLogger().severe("Default configuration YAML is invalid: " + e.getMessage());
+		}
+		Set<String> keys = config.getKeys(true);
+		this.getLogger().info(String.format("Got defaults\n%s", config.saveToString()));
+		this.deepCopyConfig(config, keys);
+		try {
+			this.getConfig().save("config.yml");
+		}
+		catch (IOException e) {
+			this.getLogger().warning("Could not save config file: " + e.getMessage());
+		}
+		this.getLogger().info(String.format("Got config\n%s", this.getConfig().saveToString()));
+	}
+
+	private void deepCopyConfig (YamlConfiguration defaults, Set<String> keys) {
+		this.reloadConfig();
+		for (String key : keys) {
+			if (!this.getConfig().contains(key)) {
+				this.getLogger().info(String.format("Adding %s: %s", key, defaults.get(key)));
+				this.getConfig().createSection(key);
+				this.getConfig().set(key, defaults.get(key));
+			} else {
+				this.getLogger().info(String.format("Existing config %s: %s", key, this.getConfig().get(key)));
+			}
+		}
+	}
+
+	private void apiInit () {
+		final String token = this.getConfig().getString("discord.token");
+		this.getLogger().info(String.format("Got Discord token <%s>", token));
+		this.api = JDABuilder.createDefault(token).build();
+
+		this.botInit ();
+		this.api.addEventListener(this.bot);
+	}
+
+	private void botInit () {
+		this.bot = new Bot(this);
+		this.bot.clientID = this.getConfig().getLong("discord.client-id");
+		this.bot.logger = this.getLogger();
+	}
+
 }
 
