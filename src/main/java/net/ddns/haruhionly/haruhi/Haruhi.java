@@ -40,7 +40,7 @@ public class Haruhi extends JavaPlugin {
 		this.saveDefaultConfig(); // Fails if old config.yml already exists
 		YamlConfiguration config = new YamlConfiguration();
 		try {
-			config.load(this.getTextResource("config.yml")); // Path in the jar
+			config.load(this.getTextResource("defaults.yml")); // Path in the jar
 		}
 		catch (IOException e) {
 			this.getLogger().severe("IO error: " + e.getMessage());
@@ -51,13 +51,7 @@ public class Haruhi extends JavaPlugin {
 		Set<String> keys = config.getKeys(true);
 		this.getLogger().info(String.format("Got defaults\n%s", config.saveToString()));
 		this.deepCopyConfig(config, keys);
-		try {
-			this.getConfig().save("config.yml");
-		}
-		catch (IOException e) {
-			this.getLogger().warning("Could not save config file: " + e.getMessage());
-		}
-		this.getLogger().info(String.format("Got config\n%s", this.getConfig().saveToString()));
+		this.saveConfig();
 	}
 
 	private void deepCopyConfig (YamlConfiguration defaults, Set<String> keys) {
@@ -67,8 +61,6 @@ public class Haruhi extends JavaPlugin {
 				this.getLogger().info(String.format("Adding %s: %s", key, defaults.get(key)));
 				this.getConfig().createSection(key);
 				this.getConfig().set(key, defaults.get(key));
-			} else {
-				this.getLogger().info(String.format("Existing config %s: %s", key, this.getConfig().get(key)));
 			}
 		}
 	}
