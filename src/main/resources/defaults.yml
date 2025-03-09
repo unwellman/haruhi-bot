@@ -1,0 +1,6 @@
+discord:
+  token: "YOUR-TOKEN-HERE"
+  client-id: 0
+  startup-message: "[Server] is online at [ip]!"
+  restart-message: "[Server] is restarting!"
+
