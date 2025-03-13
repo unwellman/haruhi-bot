@@ -12,5 +12,5 @@ discord:
   restart-message: "[Server] is restarting!"
   player-join-message: "%s has logged in!"
   player-quit-message: "%s has left!"
-  player-chat-format: "**<%s>:**\n> %s"
+  player-chat-format: "**<%s>**\n> %s"
 
