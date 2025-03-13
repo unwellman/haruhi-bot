@@ -1,6 +1,16 @@
+system:
+  server-name: "[Server]"
+  forward-chat-messages: false
+  send-startup-message: false
+  send-restart-message: false
+  send-join-message: false
+  send-quit-message: false
 discord:
   token: "YOUR-TOKEN-HERE"
   client-id: 0
   startup-message: "[Server] is online at [ip]!"
   restart-message: "[Server] is restarting!"
+  player-join-message: "%s has logged in!"
+  player-quit-message: "%s has left!"
+  player-chat-format: "\<**%s**\>:\n> %s"
 

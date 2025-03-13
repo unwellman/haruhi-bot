@@ -1,6 +1,7 @@
 package net.ddns.haruhionly.haruhi;
 
 import net.ddns.haruhionly.haruhi.Bot;
+import net.ddns.haruhionly.haruhi.ServerListener;
 
 import java.util.logging.Logger;
 import java.util.Map;
@@ -25,15 +26,42 @@ public class Haruhi extends JavaPlugin {
 	public void onEnable () {
 		this.configure();
 		this.apiInit();
+		ServerListener listener = new ServerListener(this);
+		this.getServer().getPluginManager().registerEvents(listener, this);
 	}
 
 	public void ready () {
-		this.bot.messageAll(this.getConfig().getString("discord.startup-message"));
+		if (this.getConfig().getBoolean("system.send-startup-message")) {
+			this.bot.messageAll(this.getConfig().getString("discord.startup-message"));
+		}
 	}
 
 	@Override
-	public void onDisable() {
-		this.bot.messageAll(this.getConfig().getString("discord.restart-message"));
+	public void onDisable () {
+		if (this.getConfig().getBoolean("system.send-restart-message")) {
+			this.bot.messageAll(this.getConfig().getString("discord.restart-message"));
+		}
+	}
+
+	public void onPlayerJoin (String name) {
+		if (this.getConfig().getBoolean("system.send-join-message")) {
+			String message = this.getConfig().getString("discord.player-join-message");
+			this.bot.messageAll(String.format(message, name));
+		}
+	}
+
+	public void onPlayerQuit (String name) {
+		if (this.getConfig().getBoolean("system.send-quit-message")) {
+			String message = this.getConfig().getString("discord.player-quit-message");
+			this.bot.messageAll(String.format(message, name));
+		}
+	}
+
+	public void onPlayerChat (String name, String message) {
+		if (this.getConfig().getBoolean("system.forward-chat-messages")) {
+			String format = this.getConfig().getString("discord.player-chat-format");
+			this.bot.messageAll(String.format(format, name, message));
+		}
 	}
 
 	private void configure () {
