@@ -78,11 +78,13 @@ public class Haruhi extends JavaPlugin {
 		}
 		Set<String> keys = config.getKeys(true);
 		this.getLogger().info(String.format("Got defaults\n%s", config.saveToString()));
+		// TODO: Make sure to throw a fatal exception if the user-defined config.yml is invalid
 		this.deepCopyConfig(config, keys);
 		this.saveConfig();
 	}
 
 	private void deepCopyConfig (YamlConfiguration defaults, Set<String> keys) {
+		// I don't trust this code, but seems to do what I expect it to, so I'm not touching it.
 		this.reloadConfig();
 		for (String key : keys) {
 			if (!this.getConfig().contains(key)) {
