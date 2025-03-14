@@ -4,6 +4,8 @@ import net.ddns.haruhionly.haruhi.Haruhi;
 
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -21,30 +23,40 @@ public class Bot extends ListenerAdapter {
 
 	private JDA api;
 	private Haruhi haruhi;
-	public Bot(Haruhi haruhi) {
+	private List<TextChannel> forwardChannels;
+
+	public Bot (Haruhi haruhi) {
 		this.haruhi = haruhi;
+		this.forwardChannels = new ArrayList();
 	}
 
 	@Override
-	public void onReady(ReadyEvent event) {
+	public void onReady (ReadyEvent event) {
 		this.api = event.getJDA();
 		this.haruhi.ready();
 	}
 
-	public int messageAll(String message) {
+	public int messageAll (String message) {
 		int ret = 0;
-		for (Guild gld : this.api.getGuilds()) {
-			TextChannel sys = gld.getSystemChannel();
-			this.logger.info(String.format("Sending message to %s", gld.getName()));
+		if (this.forwardChannels == null)
+			return 0;
+		for (TextChannel channel : this.forwardChannels) {
+			Guild gld = channel.getGuild();
+			this.logger.info(String.format("Sending message to #%s in %s",
+				channel.getName(), gld.getName()));
 			try {
-				sys.sendMessage(message).queue();
+				channel.sendMessage(message).queue();
 				ret ++;
 			}
 			catch(InsufficientPermissionException e) {
-				this.logger.info(String.format("Insufficient permissions in %s", gld.getName()));
+				this.logger.info("Insufficient permissions");
 			}
 		}
 		return ret;
+	}
+
+	public void addForwardChannel (Long channelId) {
+		this.forwardChannels.add(this.api.getTextChannelById(channelId));
 	}
 
 }

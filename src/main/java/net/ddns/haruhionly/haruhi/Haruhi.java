@@ -6,6 +6,7 @@ import net.ddns.haruhionly.haruhi.ServerListener;
 import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,6 +32,17 @@ public class Haruhi extends JavaPlugin {
 	}
 
 	public void ready () {
+		List<? extends Object> channelIds = this.getConfig().getList("system.forward-channels");
+		if (channelIds == null) {
+			this.getLogger().info("Got no channels to forward status to");
+			return;
+		}
+		for (Object channelId : channelIds) {
+			if (channelId instanceof Long) {
+				this.bot.addForwardChannel((Long) channelId);
+			}
+		}
+
 		if (this.getConfig().getBoolean("system.send-startup-message")) {
 			this.bot.messageAll(this.getConfig().getString("discord.startup-message"));
 		}
@@ -99,8 +111,7 @@ public class Haruhi extends JavaPlugin {
 		final String token = this.getConfig().getString("discord.token");
 		this.getLogger().info(String.format("Got Discord token <%s>", token));
 		this.api = JDABuilder.createDefault(token).build();
-
-		this.botInit ();
+		this.botInit();
 		this.api.addEventListener(this.bot);
 	}
 
@@ -108,7 +119,7 @@ public class Haruhi extends JavaPlugin {
 		this.bot = new Bot(this);
 		this.bot.clientID = this.getConfig().getLong("discord.client-id");
 		this.bot.logger = this.getLogger();
-	}
 
+	}
 }
 

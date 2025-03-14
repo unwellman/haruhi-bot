@@ -1,5 +1,6 @@
 system:
   server-name: "[Server]"
+  forward-channels: []
   forward-chat-messages: false
   send-startup-message: false
   send-restart-message: false
