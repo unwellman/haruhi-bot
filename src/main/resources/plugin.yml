@@ -9,3 +9,8 @@ description: Minecraft to Discord chat bindings
 api-version: 1.21.1
 
 author: Noah
+
+commands:
+  haruhi:
+    description: Directly interact with the Brigade Leader Haruhi Discord bot
+    usage: /<command> [#channel] <message>
