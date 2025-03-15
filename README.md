@@ -22,7 +22,7 @@ A simplistic Minecraft Spigot to Discord API binding
 - [ ] `[channel] <guild#channel>`:
     - [ ] Provide a delimiter to specify guild and channel
     - [ ] Warn if channel name is ambiguous
-- [ ] `[reply]`< `[r]`:
+- [ ] `[reply]`, `[r]`:
     - [ ] Cache last PM received per-player
     - [ ] Reply to same channel cached
 - [ ] `[user] <Discord username>`:
