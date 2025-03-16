@@ -13,4 +13,5 @@ author: Noah
 commands:
   haruhi:
     description: Directly interact with the Brigade Leader Haruhi Discord bot
-    usage: /<command> [#channel] <message>
+    usage: "Usage: /<command> [channel|reply|r|user] [options] <message>"
+

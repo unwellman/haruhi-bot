@@ -2,6 +2,7 @@ package net.ddns.haruhionly.haruhi;
 
 import net.ddns.haruhionly.haruhi.Bot;
 import net.ddns.haruhionly.haruhi.ServerListener;
+import net.ddns.haruhionly.haruhi.command.HaruhiCommand;
 
 import java.util.logging.Logger;
 import java.util.Map;
@@ -22,6 +23,7 @@ import net.dv8tion.jda.api.JDABuilder;
 public class Haruhi extends JavaPlugin {
 	private JDA api;
 	private Bot bot;
+	private Map<String, Long> replyCache;
 
 	@Override
 	public void onEnable () {
@@ -29,6 +31,7 @@ public class Haruhi extends JavaPlugin {
 		this.apiInit();
 		ServerListener listener = new ServerListener(this);
 		this.getServer().getPluginManager().registerEvents(listener, this);
+		this.getCommand("haruhi").setExecutor(new HaruhiCommand(this));
 	}
 
 	public void ready () {
@@ -48,6 +51,7 @@ public class Haruhi extends JavaPlugin {
 		}
 	}
 
+	// Server status messages
 	@Override
 	public void onDisable () {
 		if (this.getConfig().getBoolean("system.send-restart-message")) {
@@ -76,6 +80,7 @@ public class Haruhi extends JavaPlugin {
 		}
 	}
 
+	// Plugin configuration
 	private void configure () {
 		this.saveDefaultConfig(); // Fails if old config.yml already exists
 		YamlConfiguration config = new YamlConfiguration();
@@ -107,6 +112,7 @@ public class Haruhi extends JavaPlugin {
 		}
 	}
 
+	// JDA instance initialization
 	private void apiInit () {
 		final String token = this.getConfig().getString("discord.token");
 		this.getLogger().info(String.format("Got Discord token <%s>", token));
@@ -119,7 +125,48 @@ public class Haruhi extends JavaPlugin {
 		this.bot = new Bot(this);
 		this.bot.clientID = this.getConfig().getLong("discord.client-id");
 		this.bot.logger = this.getLogger();
-
 	}
+	
+	// Minecraft command logic
+	public String commandChannel (Long channelId, String playerName, String message) {
+		String ret = new String("");
+		return ret;
+	}
+
+	public String commandChannel (String guildName, String channelName, String playerName, String message) {
+		String ret = new String("");
+		return ret;
+	}
+
+	public List<String> commandChannelTab () {
+		return this.bot.tabCompleteChannel();
+	}
+
+	public String commandReply (String playerName, String message) {
+		Long channelId = this.replyCache.get(playerName);
+		if (channelId == null)
+			return new String("No recent text channel found for player %s", playerName);
+
+		String format = this.getConfig().getString("discord.player-chat-format");
+		String message = String.format(format, playerName, message);
+		boolean sent = this.bot.messageChannel(channelId, message);
+
+		if (sent)
+			return "Sent message!";
+		else
+			return "Haruhi does not have sufficient permissions in that channel!";
+	}
+
+	public String commandUser () {
+		String ret = new String("");
+		return ret;
+	}
+
+	public String commandAll () {
+		String ret = new String("");
+		return ret;
+	}
+
+	// Discord command logic
 }
 
