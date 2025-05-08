@@ -7,7 +7,7 @@ A simplistic Minecraft Spigot to Discord API binding
 - [x] Select which channels receive status updates
 - [x] Configurable status message formats
 
-## Status updates
+## Status Updates
 - [x] Notify Discord channels when server is online or offline and on player join/quit
 - [x] Forward chat messages from players
 
@@ -27,5 +27,8 @@ A simplistic Minecraft Spigot to Discord API binding
     - [ ] Reply to same channel cached
 - [ ] `[user] <Discord username>`:
     - [ ] Tab-complete Discord tag from guilds Haruhi is in
+
+## Backend Details
+- [ ] Periodic reconnect attempts (without blocking main thread) when network errors occur
 
 

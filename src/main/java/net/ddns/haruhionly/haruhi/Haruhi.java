@@ -2,7 +2,7 @@ package net.ddns.haruhionly.haruhi;
 
 import net.ddns.haruhionly.haruhi.Bot;
 import net.ddns.haruhionly.haruhi.ServerListener;
-import net.ddns.haruhionly.haruhi.command.HaruhiCommand;
+import net.ddns.haruhionly.haruhi.HaruhiCommand;
 
 import java.util.logging.Logger;
 import java.util.Map;
@@ -139,16 +139,16 @@ public class Haruhi extends JavaPlugin {
 	}
 
 	public List<String> commandChannelTab () {
-		return this.bot.tabCompleteChannel();
+		return this.bot.tabCompleteChannelNames();
 	}
 
 	public String commandReply (String playerName, String message) {
 		Long channelId = this.replyCache.get(playerName);
 		if (channelId == null)
-			return new String("No recent text channel found for player %s", playerName);
+			return String.format("No recent text channel found for player %s", playerName);
 
 		String format = this.getConfig().getString("discord.player-chat-format");
-		String message = String.format(format, playerName, message);
+		message = String.format(format, playerName, message);
 		boolean sent = this.bot.messageChannel(channelId, message);
 
 		if (sent)
