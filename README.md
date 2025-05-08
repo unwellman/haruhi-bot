@@ -17,11 +17,15 @@ A simplistic Minecraft Spigot to Discord API binding
     - [ ] Tab-complete name from list of online users
 - [ ] `/console`:
     - [ ] Pass any console command to the server and retrieve its output
+    - [ ] Enable passing tab-completion data from Minecraft to Discord
 
 ## Minecraft Commands: wrapped under `/haruhi` to avoid namespace collisions
-- [ ] `[channel] <guild#channel>`:
-    - [ ] Provide a delimiter to specify guild and channel
-    - [ ] Warn if channel name is ambiguous
+- [ ] `[list]`:
+    - [x] Get all text channels that the bot currently has access to
+    - [ ] Enumerate them to the calling player
+- [ ] `[channel] <id>`:
+    - [ ] Use short ID's (provided by `list`) to identify channels
+    - [ ] Enable tab completion
 - [ ] `[reply]`, `[r]`:
     - [ ] Cache last PM received per-player
     - [ ] Reply to same channel cached
