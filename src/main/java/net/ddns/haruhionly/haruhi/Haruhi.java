@@ -128,18 +128,15 @@ public class Haruhi extends JavaPlugin {
 	}
 	
 	// Minecraft command logic
-	public String commandChannel (Long channelId, String playerName, String message) {
-		String ret = new String("");
-		return ret;
+	
+	public String enumerateChannels () {
+		return this.bot.enumerateChannels();
 	}
 
-	public String commandChannel (String guildName, String channelName, String playerName, String message) {
-		String ret = new String("");
-		return ret;
-	}
-
-	public List<String> commandChannelTab () {
-		return this.bot.tabCompleteChannelNames();
+	public String commandChannel (int channelPos, String playerName, String message) {
+		String format = this.getConfig().getString("discord.player-chat-format");
+		String send = String.format(format, playerName, message);
+		return this.bot.messageChannel(channelPos, send);
 	}
 
 	public String commandReply (String playerName, String message) {
@@ -149,12 +146,7 @@ public class Haruhi extends JavaPlugin {
 
 		String format = this.getConfig().getString("discord.player-chat-format");
 		message = String.format(format, playerName, message);
-		boolean sent = this.bot.messageChannel(channelId, message);
-
-		if (sent)
-			return "Sent message!";
-		else
-			return "Haruhi does not have sufficient permissions in that channel!";
+		return this.bot.messageChannel(channelId, message);
 	}
 
 	public String commandUser () {

@@ -60,34 +60,35 @@ public class Bot extends ListenerAdapter {
 			}
 		}
 	}
+	
+	public String enumerateChannels () {
+		String ret = new String();
+		int i = 0;
+		for (TextChannel channel : this.allChannels) {
+			ret += String.format("(%d) %s#%s\n", i, channel.getGuild().getName(),
+				channel.getName());
+			i++;
+		}
+		return ret;
+	}
 
-	public boolean messageChannel (Long channelId, String message) {
-		TextChannel channel = this.api.getTextChannelById(channelId);
+	public String messageChannel (int channelPos, String message) {
+		TextChannel channel;
+		try {
+			channel = this.allChannels.get(channelPos);
+		} catch (IndexOutOfBoundsException e) {
+			return "Invalid channel index";
+		}
 		try {
 			channel.sendMessage(message).queue();
 		} catch (InsufficientPermissionException e) {
-			return false;
+			return "The Haruhi bot does not have permissions in that channel!";
 		}
-		return true;
+		return String.format("%s: %s", channel.getName(), message);
 	}
 
-	public List<String> tabCompleteChannelIds () {
-		List<String> completeIds = new ArrayList();
-		for (TextChannel channel : this.allChannels) {
-			completeIds.add(channel.getId());
-		}
-		return completeIds;
-	}
-
-	public List<String> tabCompleteChannelNames () {
-		List<String> completeNames = new ArrayList<String>();
-		for (TextChannel channel : this.allChannels) {
-			String name = String.format("%s#%s", channel.getGuild().getName(),
-					channel.getName());
-			this.logger.info(String.format("Found channel %s", name));
-			completeNames.add(name);
-		}
-		return completeNames;
+	public String messageChannel (Long channelId, String message) {
+		return "Not implemented!";
 	}
 
 	public int messageAll (String message) {
