@@ -26,13 +26,14 @@ public class HaruhiCommand implements TabExecutor {
 	public boolean onCommand (CommandSender sender, Command command,
 			String label, String[] args) {
 		switch (args[0]) {
-			case "list":
-				return this.list(sender, command, label, args);
 			case "channel":
+			case "c":
 				return this.channel(sender, command, label, args);
 			case "reply":
+			case "r":
 				return this.reply(sender, command, label, args);
 			case "user":
+			case "u":
 				return this.user(sender, command, label, args);
 			default:
 				return false;
@@ -43,23 +44,15 @@ public class HaruhiCommand implements TabExecutor {
 			String label, String[] args) {
 		List<String> ret = new ArrayList<String>();
 		if (args.length < 2) {
-			String[] options = {"list", "channel", "reply", "user"};
+			String[] options = {"channel", "c", "reply", "r", "user", "u"};
 			StringUtil.copyPartialMatches(args[0], Arrays.asList(options), ret);
 			Collections.sort(ret);
 			return ret;
 		}
-		switch (args[0]) {
-			case "user":
-				return this.tabUser(sender, command, label, args);
-			case "list":
-			case "channel":
-			case "reply":
-			default:
-				return null;
-		}
+		return null;
 	}
 	
-	private boolean list (CommandSender sender, Command command,
+	private boolean listChannels (CommandSender sender, Command command,
 			String label, String[] args) {
 		String enumerated = this.haruhi.enumerateChannels();
 		sender.sendMessage(enumerated);
@@ -68,7 +61,14 @@ public class HaruhiCommand implements TabExecutor {
 
 	private boolean channel (CommandSender sender, Command command,
 			String label, String[] args) {
-		// crudely parse guild and channel
+		switch (args[1]) {
+			case "list":
+			case "l":
+				return this.listChannels(sender, command, label, args);
+			default:
+				break;
+		}
+
 		int channelPos;
 		try {
 			channelPos = Integer.valueOf(args[1]);
@@ -90,12 +90,33 @@ public class HaruhiCommand implements TabExecutor {
 		return true;
 	}
 
+	private boolean listUsers (CommandSender sender, Command command,
+			String label, String[] args) {
+		String enumerated = this.haruhi.enumerateUsers();
+		sender.sendMessage(enumerated);
+		return true;
+	}
+
 	private boolean user (CommandSender sender, Command command,
 			String label, String[] args) {
-		// Try to read user as UUID (long)
-		// If fail, read as string
-		// pass to Haruhi
-		sender.sendMessage("Not implemented!");
+		switch (args[1]) {
+			case "list":
+			case "l":
+				return this.listUsers(sender, command, label, args);
+			default:
+				break;
+		}
+
+		int userPos;
+		try {
+			userPos = Integer.valueOf(args[1]);
+		} catch (NumberFormatException e) {
+			sender.sendMessage("Invalid channel number format!");
+			return true;
+		}
+		String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+		String response = this.haruhi.commandUser(userPos, sender.getName(), message);
+		sender.sendMessage(response);
 		return true;
 	}
 

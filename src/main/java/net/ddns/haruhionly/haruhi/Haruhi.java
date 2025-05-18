@@ -133,10 +133,20 @@ public class Haruhi extends JavaPlugin {
 		return this.bot.enumerateChannels();
 	}
 
+	public String enumerateUsers () {
+		return this.bot.enumerateUsers();
+	}
+
 	public String commandChannel (int channelPos, String playerName, String message) {
 		String format = this.getConfig().getString("discord.player-chat-format");
 		String send = String.format(format, playerName, message);
 		return this.bot.messageChannel(channelPos, send);
+	}
+
+	public String commandUser (int userPos, String playerName, String message) {
+		String format = this.getConfig().getString("discord.player-chat-format");
+		String send = String.format(format, playerName, message);
+		return this.bot.messageUser(userPos, send);
 	}
 
 	public String commandReply (String playerName, String message) {
@@ -147,11 +157,6 @@ public class Haruhi extends JavaPlugin {
 		String format = this.getConfig().getString("discord.player-chat-format");
 		message = String.format(format, playerName, message);
 		return this.bot.messageChannel(channelId, message);
-	}
-
-	public String commandUser () {
-		String ret = new String("");
-		return ret;
 	}
 
 	public String commandAll () {

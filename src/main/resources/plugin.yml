@@ -2,7 +2,7 @@ main: net.ddns.haruhionly.haruhi.Haruhi
 
 name: Haruhi
 
-version: 0.4.1
+version: 0.4.2
 
 description: Minecraft to Discord chat bindings
 
@@ -13,5 +13,5 @@ author: Noah
 commands:
   haruhi:
     description: Directly interact with the Brigade Leader Haruhi Discord bot
-    usage: "Usage: /<command> <send|reply|user> [channel||user] <message>"
+    usage: "Usage: /<command> <channel|c|reply|r|user|u> [options] <message>"
 
